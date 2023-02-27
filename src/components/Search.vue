@@ -1,16 +1,12 @@
 <template>
   <div>
-    <div>
-      <label></label>
-      <input type="text" @change=""/>
-    </div>
-    <div>
-      <button :disabled="!location" @click="">
-        <label>
-          Search
-        </label>
-      </button>
-    </div>
+    <label>Path:</label>
+    <input type="text" @change="on_change"/>
+    <button :disabled="location.length === 0" @click="on_search">
+      <label>
+        Search
+      </label>
+    </button>
   </div>
 </template>
 
@@ -22,11 +18,19 @@ export default defineComponent({
   name: "Search-Component",
   data() {
     return {
-      location: undefined
+      location: "",
+      error: undefined
     }
   }, methods: {
-    on_search() {
-      invoke("search_letters", {"location": location})
+    on_change(event: any) {
+      this.location = event.target.value
+    },
+    on_search(event: any) {
+      invoke("search_letters", {"location": this.location}).then((result: any) => {
+        console.log(result)
+      }).catch((error: any) => {
+        this.error = error;
+      })
     }
   }
 })

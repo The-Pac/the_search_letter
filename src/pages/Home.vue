@@ -1,18 +1,18 @@
 <template>
   <div class="main-app">
     <div id="house-container">
-      <house/>
+      <SearchComponent/>
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import {defineComponent} from "vue";
-import House from "../components/House.vue";
+import SearchComponent from "../components/Search.vue";
 
 export default defineComponent({
   name: "Home-Page",
-  components: {House},
+  components: {SearchComponent},
 })
 </script>
 
