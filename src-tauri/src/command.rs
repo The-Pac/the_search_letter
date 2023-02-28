@@ -16,10 +16,27 @@ pub fn search_letters(location: String) -> Result<model::result::Result, String>
     match path.exists() {
         true => {
             println!("Path exist!");
-            let mut chars: Vec<Letter> = vec![];
-            let mut found = false;
+            let mut chars = vec![];
             let test_duration = Instant::now();
-            recursive_read_dir()
+
+            match read_dir(path, true) {
+                Ok(directory_content) => {
+                    directory_content.iter()
+                        .for_each(|file| {
+                            match &file.children {
+                                Some(_) => {
+                                    recursive_read_dir(&file_or_directory.children, chars);
+                                }
+                                None => {}
+                            }
+                            recursive_read_dir(&file.children, &mut chars);
+
+                        });
+                }
+                Err(_) => {}
+            }
+            let result = model::result::Result::new(chars, test_duration.elapsed().as_secs());
+            Ok(result)
         }
         false => {
             Err("Path does not exist".to_string())
@@ -27,53 +44,53 @@ pub fn search_letters(location: String) -> Result<model::result::Result, String>
     }
 }
 
-fn recursive_read_dir(path: &Path,) {
-    match read_dir(path, true) {
-        Ok(directory_content) => {
-            directory_content.iter()
-                .for_each(|file| {
-                    println!("{}", file.name.clone().expect("dd"));
-
-                    match file.children {
-                        Some(childrens) => {
-                            recursive_read_dir(&path);
-                        }
-                        None => {
-                            match read(&file.path) {
-                                Ok(file_content) => {
-                                    file_content.iter()
-                                        .for_each(|byte| {
-                                            let byte_as_char = byte.clone() as char;
-                                            if *byte != 27 {
-                                                match chars.is_empty() {
-                                                    true => {
-                                                        chars.push(Letter::new(byte.clone(), 1, byte_as_char));
-                                                    }
-                                                    false => {
-                                                        for char in chars.iter_mut() {
-                                                            if char.byte == *byte {
-                                                                char.number += 1;
-                                                                found = true;
-                                                                break;
-                                                            }
-                                                        }
-                                                        if !found {
+fn recursive_read_dir(disk_entries: &Option<Vec<DiskEntry>>, chars: &mut Vec<Letter>) {
+    match disk_entries {
+        Some(disk_entries) => {
+            disk_entries.iter().for_each(|file_or_directory| {
+                match file_or_directory.children {
+                    Some(_) => {
+                        disk_entries.iter()
+                            .for_each(|file| {
+                                match read(file.path.clone()) {
+                                    Ok(file_content) => {
+                                        let mut found: bool = false;
+                                        file_content.iter()
+                                            .for_each(|byte| {
+                                                let byte_as_char = byte.clone() as char;
+                                                if *byte != 27 {
+                                                    match chars.is_empty() {
+                                                        true => {
                                                             chars.push(Letter::new(byte.clone(), 1, byte_as_char));
                                                         }
-                                                    }
-                                                };
-                                            }
-                                        });
+                                                        false => {
+                                                            for char in chars.iter_mut() {
+                                                                if char.byte == *byte {
+                                                                    char.number += 1;
+                                                                    found = true;
+                                                                    break;
+                                                                }
+                                                            }
+                                                            if !found {
+                                                                chars.push(Letter::new(byte.clone(), 1, byte_as_char));
+                                                            }
+                                                        }
+                                                    };
+                                                }
+                                            });
+                                    }
+                                    Err(_) => {}
                                 }
-                                Err(_) => {}
-                            }
-                        }
+                            })
                     }
-                });
-            Ok(model::result::Result::new(chars, Instant::now().duration_since(test_duration).as_secs()))
+                    None => {
+                        recursive_read_dir(&file_or_directory.children, chars);
+                    }
+                }
+
+            });
         }
-        Err(_) => {
-            Err("Cannot read the directory".to_string())
+        None => {
         }
     }
 }
