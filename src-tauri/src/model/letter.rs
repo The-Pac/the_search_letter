@@ -1,14 +1,13 @@
 use serde::Serialize;
 
-#[derive(Serialize)]
+#[derive(Serialize, Debug)]
 pub struct Letter {
-    pub byte: u8,
     pub number: isize,
     pub char: char,
 }
 
 impl Letter {
-    pub fn new(byte: u8, number: isize, char: char) -> Self {
-        Self { byte, number, char }
+    pub fn new(number: isize, char: char) -> Self {
+        Self { number, char }
     }
 }
