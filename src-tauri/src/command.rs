@@ -31,7 +31,6 @@ pub fn search_letters(location: String) -> Result<model::result::Result, String>
 }
 
 fn recursive_read_dir(path: &Path, chars: &mut Vec<Letter>) {
-    let mut finished = false;
     match read_dir(path, true) {
         Ok(directory_content) => {
             directory_content.iter()
@@ -43,9 +42,9 @@ fn recursive_read_dir(path: &Path, chars: &mut Vec<Letter>) {
                         None => {
                             match read(file.path.clone()) {
                                 Ok(file_content) => {
-                                    let mut found: bool = false;
                                     file_content.iter()
                                         .for_each(|byte| {
+                                            let mut found: bool = false;
                                             let byte_as_char = byte.clone() as char;
                                             if byte_as_char != ' ' {
                                                 match chars.is_empty() {
@@ -70,7 +69,6 @@ fn recursive_read_dir(path: &Path, chars: &mut Vec<Letter>) {
                                 }
                                 Err(_) => {
                                     eprintln!("Error reading directory content");
-                                    finished = true;
                                 }
                             }
                         }
@@ -79,12 +77,6 @@ fn recursive_read_dir(path: &Path, chars: &mut Vec<Letter>) {
         }
         Err(_) => {
             eprintln!("Error reading directory content");
-            finished = true;
-        }
-    }
-    if finished {
-        for x in chars {
-            println!("{:?}", x);
         }
     }
 }

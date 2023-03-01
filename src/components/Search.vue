@@ -1,7 +1,4 @@
 <template>
-  <div v-if="location.length !== 0 && duration">
-    <label>Duration : {{ duration }} sec</label>
-  </div>
   <div>
     <label>Path:</label>
     <input type="text" @change="on_change"/>
@@ -22,7 +19,6 @@ export default defineComponent({
   data() {
     return {
       location: "",
-      duration: undefined,
       error: undefined
     }
   }, methods: {
@@ -31,8 +27,7 @@ export default defineComponent({
     },
     on_search(event: any) {
       invoke("search_letters", {"location": this.location}).then((result: any) => {
-        console.log(result)
-        this.duration = result.duration;
+        this.$emit('update:chars_result', result)
       }).catch((error: any) => {
         this.error = error;
       })
