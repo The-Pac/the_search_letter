@@ -26,6 +26,12 @@
 #app {
   animation: page_show .5s;
   opacity: 1;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  flex-direction: column;
 }
 
 body {
@@ -36,8 +42,9 @@ body {
   justify-content: center;
   align-items: center;
   overflow-x: clip;
+  color: wheat;
   overflow-y: clip;
-  background: black;
+  background: rgba(0, 0, 0, 0.7);
   font-family: Inter, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
 }
 
