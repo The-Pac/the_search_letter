@@ -18,14 +18,17 @@
 <script lang="ts">
 import {defineComponent} from "vue";
 import {invoke} from "@tauri-apps/api";
+import LoadingComponent from "./Loading.vue";
 
 export default defineComponent({
   name: "Search-Component",
+  components: {LoadingComponent},
   data() {
     return {
       location: "",
       filter_extensions: [],
       selected_extensions: [],
+      is_loading: false,
       error: undefined
     }
   },
@@ -38,11 +41,14 @@ export default defineComponent({
     on_change(event: any) {
       this.location = event.target.value
     },
-    on_search(event: any) {
+    on_search() {
+      this.$emit('update:is_loading', true)
       invoke("search_letters", {
         "location": this.location,
         "selectedExtensions": this.selected_extensions
       }).then((result: any) => {
+        this.$emit('update:is_loading', false)
+        this.$emit('update:finished', true)
         this.$emit('update:test_result', result)
       }).catch((error: any) => {
         this.error = error;

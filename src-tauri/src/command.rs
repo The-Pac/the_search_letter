@@ -1,14 +1,12 @@
-use std::fs::{metadata, read, read_to_string};
-use std::ops::{Add, AddAssign, Div, DivAssign};
+use std::fs::{read, read_to_string};
+use std::ops::AddAssign;
 use std::os::windows::fs::MetadataExt;
 use std::path::Path;
-use std::thread::{sleep, spawn};
-use std::time::{Duration, Instant};
+use std::time::Instant;
 
 use log::{error, info};
-use serde::de::Unexpected::Str;
 use serde_json::from_str;
-use tauri::api::dir::{DiskEntry, read_dir};
+use tauri::api::dir::read_dir;
 use tauri::command;
 
 use crate::model;
@@ -30,6 +28,7 @@ pub fn search_letters(location: String, selected_extensions: Vec<String>) -> Res
 
             recursive_read_dir(path, &mut chars, &selected_extensions, &mut total_chars, &mut files, &mut total_sizes);
 
+            info!("Finished");
             chars.sort_by(|a, b| a.number.cmp(&b.number).reverse());
             for char in chars.iter_mut() {
                 char.percents = format!("{:.2}%", (char.number as f64 * 100.0) / total_chars as f64);
@@ -78,20 +77,20 @@ fn recursive_read_dir(path: &Path, chars: &mut Vec<Letter>, selected_extensions:
                                                         match chars.is_empty() {
                                                             true => {
                                                                 chars.push(Letter::new(1, byte_as_char, String::new()));
-                                                                &total_chars.add_assign(1);
+                                                                let _ = &total_chars.add_assign(1);
                                                             }
                                                             false => {
                                                                 for char in chars.iter_mut() {
                                                                     if char.char == byte_as_char {
                                                                         char.number += 1;
-                                                                        &total_chars.add_assign(1);
+                                                                        let _ = &total_chars.add_assign(1);
                                                                         found = true;
                                                                         break;
                                                                     }
                                                                 }
                                                                 if !found {
                                                                     chars.push(Letter::new(1, byte_as_char, String::new()));
-                                                                    &total_chars.add_assign(1);
+                                                                    let _ = &total_chars.add_assign(1);
                                                                 }
                                                             }
                                                         };

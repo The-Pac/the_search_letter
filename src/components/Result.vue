@@ -48,7 +48,7 @@
 
 <script lang="ts">
 import {defineComponent} from "vue";
-import Result from "../models/Result";
+import Result from "../app/models/Result";
 
 export default defineComponent({
   name: "Result-Component",
