@@ -33,7 +33,7 @@
         "icons/icon.icns",
         "icons/icon.ico"
       ],
-      "identifier": "com.tauri.dev",
+      "identifier": "com.search.dev",
       "longDescription": "",
       "macOS": {
         "entitlements": null,
@@ -42,7 +42,9 @@
         "providerShortName": null,
         "signingIdentity": null
       },
-      "resources": [],
+      "resources": [
+        "config/extensions.json"
+      ],
       "shortDescription": "",
       "targets": "all",
       "windows": {

@@ -1,21 +1,21 @@
 export default class Letter {
     private _number: number
-    private _percents: number
+    private _percents: string
     private _char: string
 
 
-    constructor(number: number,percents: number, char: string) {
+    constructor(number: number,percents: string, char: string) {
         this._number = number;
         this._char = char;
         this._percents = percents;
     }
 
 
-    get percents(): number {
+    get percents(): string {
         return this._percents;
     }
 
-    set percents(value: number) {
+    set percents(value: string) {
         this._percents = value;
     }
 

@@ -1,6 +1,6 @@
 <template>
   <div class="main-app">
-    <SearchComponent v-if="test_result.length === 0 " v-model:test_result="test_result"/>
+    <SearchComponent v-if="!test_result" v-model:test_result="test_result"/>
     <ResultComponent v-else v-model:test_result="test_result"/>
   </div>
 </template>
@@ -9,13 +9,14 @@
 import {defineComponent} from "vue";
 import SearchComponent from "../components/Search.vue";
 import ResultComponent from "../components/Result.vue";
+import Result from "../models/Result";
 
 export default defineComponent({
   name: "Home-Page",
   components: {ResultComponent, SearchComponent},
   data() {
     return {
-      test_result: []
+      test_result: Result
     }
   }
 })

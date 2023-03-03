@@ -1,21 +1,45 @@
 <template>
-  <div id="result-container">
+  <div id="result-container" v-if="test_result">
     <div id="result-duration-container">
       <label>Duration : {{ test_result.duration }} secs</label>
     </div>
-    <table id="result-table">
+    <div>
+      <button @click="show_character = true">Characters</button>
+      <button @click="show_character = false">Files</button>
+    </div>
+    <table v-if="show_character" id="result-table">
       <thead>
       <tr>
+        <th>Ranking</th>
         <th>Character</th>
         <th>Number</th>
-        <!--        <th>Percents</th>-->
+        <th>Percents</th>
       </tr>
       </thead>
       <tbody>
-      <tr v-for="row in test_result.chars_result">
+      <tr v-for="(row,index) in test_result.chars_result">
+        <td>{{ index + 1 }}</td>
         <td>{{ row.char }}</td>
         <td>{{ row.number }}</td>
-        <!--        <td>{{ row.percents }}</td>-->
+        <td>{{ row.percents }}</td>
+      </tr>
+      </tbody>
+    </table>
+    <table v-else id="result-table">
+      <thead>
+      <tr>
+        <th>Ranking</th>
+        <th>File name</th>
+        <th>Size</th>
+        <th>Percents</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr v-for="(row,index) in test_result.files_result">
+        <td>{{ index + 1 }}</td>
+        <td>{{ row.name }}</td>
+        <td>{{ row.size }}</td>
+        <td>{{ row.percents }}</td>
       </tr>
       </tbody>
     </table>
@@ -28,9 +52,13 @@ import Result from "../models/Result";
 
 export default defineComponent({
   name: "Result-Component",
-  props: {
+  data() {
+    return {
+      show_character: true
+    }
+  }, props: {
     test_result: Result
-  },
+  }
 })
 </script>
 
@@ -57,18 +85,38 @@ export default defineComponent({
     height: 100%;
     width: 100%;
     display: flex;
-    justify-content: center;
-    align-content: center;
     flex-direction: column;
     overflow-y: scroll;
 
     tbody {
       height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+
+      tr {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+      }
     }
 
-    td, th {
+    thead {
       width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      tr {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
     }
+
+
   }
 
   #result-table::-webkit-scrollbar {
